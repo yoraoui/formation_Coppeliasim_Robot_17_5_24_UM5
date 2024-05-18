@@ -22,14 +22,10 @@ if clientID != -1:
             if res == 0:
                 # Obtenir la position et l'orientation de la caméra
                 res, cam_position = sim.simxGetObjectPosition(clientID, camera_handle, -1, sim.simx_opmode_blocking)
-                res, cam_orientation = sim.simxGetObjectOrientation(clientID, camera_handle, -1, sim.simx_opmode_blocking)
-                
+                res, cam_orientation = sim.simxGetObjectOrientation(clientID, camera_handle, -1, sim.simx_opmode_blocking)                
                 # Calculer la direction vers l'objet
                 direction = [obj_position[i] - cam_position[i] for i in range(3)]
                 print("direction = ", direction)
-                
-                # Calculer l'angle d'orientation nécessaire pour pointer la caméra vers l'objet
-                res = sim.simxSetObjectOrientation(clientID, camera_handle, -1, [0, 0, cam_orientation[2] + direction[1]], sim.simx_opmode_blocking)
                 
             time.sleep(0.1)  # Mettre à jour la position de la caméra toutes les 0.1 seconde
             
