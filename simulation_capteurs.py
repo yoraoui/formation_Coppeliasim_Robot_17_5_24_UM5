@@ -1,40 +1,27 @@
-import sim            # Importer la bibliothèque Python V-REP
-import time           # Importer la bibliothèque de gestion du temps
+#python
+import numpy as np
 
-# Connexion à V-REP (CoppeliaSim)
-sim.simxFinish(-1)  # Fermer toute connexion existante
-clientID = sim.simxStart('127.0.0.1', 19999, True, True, 5000, 5)  # Se connecter à V-REP
+def sysCall_init():
+    global camera_handle
+    sim = require('sim')
 
-if clientID != -1:
-    print('Connexion à V-REP réussie!')
+    camera_handle = sim.getObjectHandle('Vision_sensor')
+    object_handle = sim.getObjectHandle('Sphere')
+    obj_position = sim.getObjectPosition(object_handle, -1)
+    cam_position = sim.getObjectPosition(camera_handle, -1)
+    cam_orientation = sim.getObjectOrientation(camera_handle, -1)
+    print("cam_position", cam_position)
+def sysCall_thread():
+    # Put your main code here, e.g.:
+    #
+    while not sim.getSimulationStopping():
+         p = sim.getObjectPosition(camera_handle, -1)
+         euler = sim.getObjectOrientation(camera_handle, -1)
+         p[0] += 0.001
+         p[1] += 0.001
+         euler[0] +=np.pi/19
+         sim.setObjectPosition(camera_handle, -1, p)
+         sim.setObjectOrientation(camera_handle, -1, euler)
+         sim.step() # resume in next simulation step
     
-    # Récupérer les poignées des objets (caméra et objet à suivre)
-    err_cam, camera_handle = sim.simxGetObjectHandle(clientID, 'Vision_sensor', sim.simx_opmode_blocking)
-    err_obj, object_handle = sim.simxGetObjectHandle(clientID, 'Sphere', sim.simx_opmode_blocking)
-    
-    if err_cam == 0 and err_obj == 0:
-        print('Poignées d\'objets récupérées avec succès!')
-        
-        while True:
-            # Obtenir la position de l'objet à suivre
-            res, obj_position = sim.simxGetObjectPosition(clientID, object_handle, -1, sim.simx_opmode_blocking)
-            
-            if res == 0:
-                # Obtenir la position et l'orientation de la caméra
-                res, cam_position = sim.simxGetObjectPosition(clientID, camera_handle, -1, sim.simx_opmode_blocking)
-                res, cam_orientation = sim.simxGetObjectOrientation(clientID, camera_handle, -1, sim.simx_opmode_blocking)                
-                # Calculer la direction vers l'objet
-                direction = [obj_position[i] - cam_position[i] for i in range(3)]
-                print("direction = ", direction)
-                
-            time.sleep(0.1)  # Mettre à jour la position de la caméra toutes les 0.1 seconde
-            
-    else:
-        print('Erreur lors de la récupération des poignées d\'objets.')
-        
-    # Fermer la connexion à V-REP
-    sim.simxFinish(clientID)
-    print('Connexion à V-REP terminée.')
-    
-else:
-    print('Impossible de se connecter à V-REP. Assurez-vous que V-REP est en cours d\'exécution sur votre ordinateur.')
+# See the user manual or the available code snippets for additional callback functions and details
