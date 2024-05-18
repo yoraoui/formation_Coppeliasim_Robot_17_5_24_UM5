@@ -28,13 +28,6 @@ def sysCall_init():
     curveId = sim.addGraphCurve(graphHandle, 'x/y', 2, [graph_x,graph_y], [0,0],'m by m',0,[1, 0, 0],2)
 
 def sysCall_actuation():
-    # Put your main code here, e.g.:
-    #
-    # while True:
-    #     p = sim.getObjectPosition(objHandle, -1)
-    #     p[0] += 0.001
-    #     sim.setObjectPosition(objHandle, -1, p)
-    #     sim.step() # resume in next simulation step (if simulation is running and stepping enabled)
     t = sim.getSimulationTime()
     if (t>1 and dist>0.7) or (t>1 and dist==0):
         
