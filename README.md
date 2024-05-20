@@ -10,3 +10,6 @@ To use Coppeliasim with Python, you have to type this command:
 
  pip install numpy
 
+
+Here you will find the link to the help of Coppeliasim: 
+https://manual.coppeliarobotics.com/en/apiFunctions.htm
